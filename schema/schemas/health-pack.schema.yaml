@@ -1,0 +1,13 @@
+$id: health-pack.schema.yaml
+$schema: https://json-schema.org/draft/2020-12/schema
+description: Coordinates of a health pack
+properties:
+  x:
+    description: X coordinate
+    type: number
+  y:
+    description: Y coordinate
+    type: number
+required:
+  - x
+  - y

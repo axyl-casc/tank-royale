@@ -7,6 +7,7 @@ import dev.robocode.tankroyale.server.score.ScoreCalculator
 import dev.robocode.tankroyale.server.event.*
 import dev.robocode.tankroyale.server.model.*
 import dev.robocode.tankroyale.server.model.Color.Companion.from
+import dev.robocode.tankroyale.server.model.isPointInsideCircle
 import dev.robocode.tankroyale.server.rules.*
 import dev.robocode.tankroyale.server.score.ScoreTracker
 import dev.robocode.tankroyale.server.Server
@@ -69,6 +70,9 @@ class ModelUpdater(
 
     /** Inactivity counter */
     private var inactivityCounter = 0
+
+    /** Current health pack position */
+    private var healthPack = randomHealthPack()
 
     /** The accumulated results ordered with higher total scores first */
     internal fun getResults() = accumulatedScoreCalculator.getScores()
@@ -149,11 +153,14 @@ class ModelUpdater(
         checkForAndHandleDisabledBots()
         checkAndHandleDefeatedBots()
 
+        checkAndHandleHealthPackPickup()
+
         checkAndHandleRoundOrGameOver()
 
         // Store bot and bullet snapshots
         turn.copyBots(botsMap.values)
         turn.copyBullets(bullets)
+        turn.healthPack = healthPack.toPoint()
 
         // Remove dead bots
         botsMap.values.removeIf(IBot::isDead)
@@ -269,6 +276,17 @@ class ModelUpdater(
         val cellHeight = setup.arenaHeight / gridHeight
 
         return randomBotPoint(occupiedCells, cellCount, gridWidth, cellWidth, cellHeight)
+    }
+
+    /** Returns a random position around the center for spawning a health pack */
+    private fun randomHealthPack(): MutablePoint {
+        val centerX = setup.arenaWidth / 2.0
+        val centerY = setup.arenaHeight / 2.0
+        val rangeX = setup.arenaWidth / 4.0
+        val rangeY = setup.arenaHeight / 4.0
+        val x = centerX + (Math.random() - 0.5) * rangeX
+        val y = centerY + (Math.random() - 0.5) * rangeY
+        return MutablePoint(x, y)
     }
 
     /** Execute bot intents for all bots that are not disabled */
@@ -668,6 +686,16 @@ class ModelUpdater(
         }
 
         scoreTracker.registerDeaths(deadBotIds)
+    }
+
+    /** Checks if any bot picks up the health pack */
+    private fun checkAndHandleHealthPackPickup() {
+        botsMap.values.forEach { bot ->
+            if (bot.isAlive && isPointInsideCircle(bot.position.toPoint(), healthPack, BOT_BOUNDING_CIRCLE_RADIUS)) {
+                bot.changeEnergy(10.0)
+                healthPack = randomHealthPack()
+            }
+        }
     }
 
     /** Cool down and fire guns. */

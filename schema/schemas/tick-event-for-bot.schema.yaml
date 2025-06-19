@@ -20,8 +20,12 @@ properties:
     type: array
     items:
       $ref: event.schema.yaml
+  healthPack:
+    description: Position of the health pack in this turn
+    $ref: health-pack.schema.yaml
 required:
   - roundNumber
   - botState
   - bulletStates
   - events
+  - healthPack

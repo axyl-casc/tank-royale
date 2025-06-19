@@ -19,10 +19,13 @@ data class MutableTurn(
     /** Observer events  */
     override val observerEvents: MutableSet<Event> = mutableSetOf(),
 
-    ) : ITurn {
+    /** Position of the health pack */
+    override var healthPack: Point = Point(0.0, 0.0),
+
+) : ITurn {
 
     /** Returns an immutable copy of this turn */
-    fun toTurn() = Turn(turnNumber, copyBots(), copyBullets(), observerEvents.toSet(), copyBotEvents())
+    fun toTurn() = Turn(turnNumber, copyBots(), copyBullets(), observerEvents.toSet(), copyBotEvents(), healthPack)
 
     /**
      * Adds an observer event.
