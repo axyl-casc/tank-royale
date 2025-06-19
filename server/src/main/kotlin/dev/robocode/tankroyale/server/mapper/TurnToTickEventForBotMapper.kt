@@ -4,6 +4,7 @@ import dev.robocode.tankroyale.schema.Message
 import dev.robocode.tankroyale.schema.TickEventForBot
 import dev.robocode.tankroyale.server.mapper.BotToBotStateMapper.map
 import dev.robocode.tankroyale.server.mapper.BulletsToBulletStatesMapper.map
+import dev.robocode.tankroyale.server.mapper.PointToHealthPackMapper.map as mapHealth
 import dev.robocode.tankroyale.server.model.BotId
 import dev.robocode.tankroyale.server.model.ITurn
 
@@ -17,6 +18,7 @@ object TurnToTickEventForBotMapper {
             botState = map(bot, enemyCount)
             bulletStates = map(turn.bullets.filter { it.botId == bot.id }.toSet())
             events = EventsMapper.map(turn.getEvents(botId))
+            healthPack = mapHealth(turn.healthPack)
         }
     }
 }

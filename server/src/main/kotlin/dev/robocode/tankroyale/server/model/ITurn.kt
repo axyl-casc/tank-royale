@@ -19,6 +19,9 @@ interface ITurn {
     /** Map over bot events  */
     val botEvents: Map<BotId, Set<Event>>
 
+    /** Position of the health pack available in this turn */
+    val healthPack: Point
+
     /**
      * Returns a bot instance by id.
      * @param botId is the id of the bot.

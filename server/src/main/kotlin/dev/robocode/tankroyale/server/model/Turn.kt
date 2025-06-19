@@ -19,4 +19,7 @@ data class Turn(
     /** Map over bot events  */
     override val botEvents: Map<BotId, Set<Event>>,
 
+    /** Position of the health pack */
+    override val healthPack: Point,
+
     ) : ITurn

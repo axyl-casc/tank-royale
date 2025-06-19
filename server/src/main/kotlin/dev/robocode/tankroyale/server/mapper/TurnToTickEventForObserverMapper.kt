@@ -3,6 +3,7 @@ package dev.robocode.tankroyale.server.mapper
 import dev.robocode.tankroyale.schema.Message
 import dev.robocode.tankroyale.schema.Participant
 import dev.robocode.tankroyale.schema.TickEventForObserver
+import dev.robocode.tankroyale.server.mapper.PointToHealthPackMapper.map as mapHealth
 import dev.robocode.tankroyale.server.model.BotId
 import dev.robocode.tankroyale.server.model.ITurn
 import java.util.Collections.unmodifiableList
@@ -22,5 +23,6 @@ object TurnToTickEventForObserverMapper {
             botStates = unmodifiableList(BotsToBotsWithIdMapper.map(turn.bots, participantsMap, enemyCountMap, debugGraphicsEnableMap))
             bulletStates = unmodifiableList(BulletsToBulletStatesMapper.map(turn.bullets))
             events = unmodifiableList(EventsMapper.map(turn.observerEvents))
+            healthPack = mapHealth(turn.healthPack)
         }
 }
